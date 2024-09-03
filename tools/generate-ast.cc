@@ -98,6 +98,24 @@ void define_includes(std::filesystem::path output_dir, std::string base_name, st
         file << "    };" << std::endl;
     }
 
+    file << std::endl;
+    file << "    template <typename R>" << std::endl;
+    file << "    class " << base_name << "Visitor" << std::endl;
+    file << "    {" << std::endl;
+    file << "    public:" << std::endl;
+
+    for(const auto &type : types)
+    {
+        auto pos = type.find(":");
+        auto class_name = type
+            .substr(0, pos);
+        trim(class_name);
+
+        file << "        virtual R visit" << class_name << "("
+                << class_name << " *expr) = 0;" << std::endl;
+    }
+    file << "    };" << std::endl;
+
     file << "}" << std::endl;
 
     file.close();

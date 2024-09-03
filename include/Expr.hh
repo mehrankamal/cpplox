@@ -46,4 +46,14 @@ namespace Lox
         Token op;
         Expr *right;
     };
+
+    template <typename R>
+    class ExprVisitor
+    {
+    public:
+        virtual R visitBinary(Binary *expr) = 0;
+        virtual R visitGrouping(Grouping *expr) = 0;
+        virtual R visitLiteral(Literal *expr) = 0;
+        virtual R visitUnary(Unary *expr) = 0;
+    };
 }
