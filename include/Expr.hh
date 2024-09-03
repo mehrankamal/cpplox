@@ -15,32 +15,43 @@ namespace Lox
     {
     public:
         Binary(Expr *left, Token op, Expr *right);
+        template <typename R>
+        R visit(ExprVisitor<R> *visitor);
         ~Binary();
 
         Expr *left;
         Token op;
         Expr *right;
     };
+
     class Grouping : public Expr
     {
     public:
         Grouping(Expr *expression);
+        template <typename R>
+        R visit(ExprVisitor<R> *visitor);
         ~Grouping();
 
         Expr *expression;
     };
+
     class Literal : public Expr
     {
     public:
         Literal(std::any value);
+        template <typename R>
+        R visit(ExprVisitor<R> *visitor);
         ~Literal();
 
         std::any value;
     };
+
     class Unary : public Expr
     {
     public:
         Unary(Token op, Expr *right);
+        template <typename R>
+        R visit(ExprVisitor<R> *visitor);
         ~Unary();
 
         Token op;

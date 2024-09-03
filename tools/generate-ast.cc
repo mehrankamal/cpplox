@@ -75,6 +75,8 @@ void define_includes(std::filesystem::path output_dir, std::string base_name, st
         file << "    {" << std::endl;
         file << "    public:" << std::endl;
         file << "        " << class_name << "(" << type_params << ");" << std::endl;
+        file << "        template <typename R>" << std::endl;
+        file << "        R visit(ExprVisitor<R> *visitor);" << std::endl;
         file << "        ~" << class_name << "();" << std::endl;
         file << std::endl;
         std::vector<std::string> fields;
@@ -96,23 +98,23 @@ void define_includes(std::filesystem::path output_dir, std::string base_name, st
         }
 
         file << "    };" << std::endl;
+        file << std::endl;
     }
 
-    file << std::endl;
     file << "    template <typename R>" << std::endl;
     file << "    class " << base_name << "Visitor" << std::endl;
     file << "    {" << std::endl;
     file << "    public:" << std::endl;
 
-    for(const auto &type : types)
+    for (const auto &type : types)
     {
         auto pos = type.find(":");
         auto class_name = type
-            .substr(0, pos);
+                              .substr(0, pos);
         trim(class_name);
 
         file << "        virtual R visit" << class_name << "("
-                << class_name << " *expr) = 0;" << std::endl;
+             << class_name << " *expr) = 0;" << std::endl;
     }
     file << "    };" << std::endl;
 
@@ -173,7 +175,12 @@ void define_implementations(std::filesystem::path output_dir, std::string base_n
         file << std::endl;
         file << "    {" << std::endl;
         file << "    }" << std::endl;
-        file << std::endl;
+
+        file << "    template <typename R>" << std::endl;
+        file << "    R " << class_name << "::visit(ExprVisitor<R> *visitor)" << std::endl;
+        file << "    {" << std::endl;
+        file << "        return visitor->visit" << class_name << "(this);" << std::endl;
+        file << "    }" << std::endl;
 
         file << "    " << class_name << "::~" << class_name << "()" << std::endl;
         file << "    {" << std::endl;
