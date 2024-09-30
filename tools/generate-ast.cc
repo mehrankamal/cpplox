@@ -45,6 +45,15 @@ void trim(std::string &s)
     rtrim(s);
 }
 
+std::string convert_to_lowercase(const std::string& str) {
+    std::string result;
+    for (char ch : str) {
+        result += std::tolower(ch);
+    }
+    return result;
+}
+
+
 void define_includes(std::filesystem::path output_dir, std::string base_name, std::vector<std::string> types)
 {
     std::ofstream file(output_dir / (base_name + ".hh"));
@@ -56,9 +65,16 @@ void define_includes(std::filesystem::path output_dir, std::string base_name, st
     file << "namespace Lox" << std::endl;
     file << "{" << std::endl;
     file << std::endl;
+
+
+    file << "    template <typename R>" << std::endl;
+    file << "    class " << base_name << "Visitor;" << std::endl;
+    file << std::endl;
+
     file << "    class Expr" << std::endl;
     file << "    {" << std::endl;
     file << "    public:" << std::endl;
+    file << "        virtual std::any visit(ExprVisitor<std::any> &visitor) = 0;" << std::endl;
     file << "        virtual ~Expr() = default;" << std::endl;
     file << "    };" << std::endl;
     file << std::endl;
@@ -113,7 +129,7 @@ void define_includes(std::filesystem::path output_dir, std::string base_name, st
                               .substr(0, pos);
         trim(class_name);
 
-        file << "        virtual R visit" << class_name << "("
+        file << "        virtual R visit_" << convert_to_lowercase(class_name) << "("
              << class_name << " *expr) = 0;" << std::endl;
     }
     file << "    };" << std::endl;

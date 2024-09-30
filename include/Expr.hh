@@ -5,9 +5,13 @@
 namespace Lox
 {
 
+    template <typename R>
+    class ExprVisitor;
+
     class Expr
     {
     public:
+        virtual std::any visit(ExprVisitor<std::any> &visitor) = 0;
         virtual ~Expr() = default;
     };
 
@@ -62,9 +66,9 @@ namespace Lox
     class ExprVisitor
     {
     public:
-        virtual R visitBinary(Binary *expr) = 0;
-        virtual R visitGrouping(Grouping *expr) = 0;
-        virtual R visitLiteral(Literal *expr) = 0;
-        virtual R visitUnary(Unary *expr) = 0;
+        virtual R visit_binary(Binary *expr) = 0;
+        virtual R visit_grouping(Grouping *expr) = 0;
+        virtual R visit_literal(Literal *expr) = 0;
+        virtual R visit_unary(Unary *expr) = 0;
     };
 }
